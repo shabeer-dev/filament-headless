@@ -27,8 +27,8 @@ class InstallHeadlessKitCommand extends Command
         $force = (bool) $this->option('force');
         $isInteractive = ! $this->option('non-interactive') && ! $this->option('no-interaction');
 
-        // Prevent cmd.exe "< /dev/tty" error in Git Bash (MinGW) on Windows
-        if (PHP_OS_FAMILY === 'Windows' && (getenv('MSYSTEM') || getenv('MINGW_PREFIX'))) {
+        // Prevent Windows terminal errors (such as "The system cannot find the path specified." or "/dev/tty")
+        if (PHP_OS_FAMILY === 'Windows') {
             Prompt::fallbackWhen(true);
         }
 
@@ -177,13 +177,51 @@ class InstallHeadlessKitCommand extends Command
         }
 
         $content = $files->get($configPath);
-        $localesExport = var_export($configuredLocales, true);
-        $localesExport = preg_replace('/array \(/', '[', $localesExport);
-        $localesExport = preg_replace('/\)/', ']', $localesExport);
 
-        // Replace locales array
-        $content = preg_replace("/'locales' => \[[^\]]*\]/s", "'locales' => {$localesExport}", $content);
-        $content = preg_replace("/'default_locale' => [^,]+,/", "'default_locale' => '{$default}',", $content);
+        // Build clean formatted PHP array code for locales
+        $lines = ["[\n"];
+        foreach ($configuredLocales as $code => $meta) {
+            $lines[] = "        '{$code}' => [\n";
+            $lines[] = "            'name' => '{$meta['name']}',\n";
+            $lines[] = "            'native' => '{$meta['native']}',\n";
+            $lines[] = "            'dir' => '{$meta['dir']}',\n";
+            $lines[] = "            'flag' => '{$meta['flag']}',\n";
+            $lines[] = "        ],\n";
+        }
+        $lines[] = '    ]';
+        $localesExport = implode('', $lines);
+
+        // Safely replace the 'locales' block using bracket counting
+        $startPos = strpos($content, "'locales'");
+        if ($startPos !== false) {
+            $bracketStart = strpos($content, '[', $startPos);
+            if ($bracketStart !== false) {
+                $depth = 0;
+                $bracketEnd = false;
+                $len = strlen($content);
+                for ($i = $bracketStart; $i < $len; $i++) {
+                    if ($content[$i] === '[') {
+                        $depth++;
+                    } elseif ($content[$i] === ']') {
+                        $depth--;
+                        if ($depth === 0) {
+                            $bracketEnd = $i;
+                            break;
+                        }
+                    }
+                }
+                if ($bracketEnd !== false) {
+                    $content = substr($content, 0, $bracketStart).$localesExport.substr($content, $bracketEnd + 1);
+                }
+            }
+        }
+
+        // Safely replace 'default_locale' matching everything up to newline
+        $content = preg_replace(
+            "/('default_locale'\s*=>\s*)(.*?)(\r?\n)/",
+            "'default_locale' => '{$default}',\$3",
+            $content
+        );
 
         $files->put($configPath, $content);
     }
