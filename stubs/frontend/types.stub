@@ -1,0 +1,27 @@
+export interface Page{{CLASS_NAME}} extends HeroFields, FooterCtaFields {
+    id: number;
+    overview_title: string;
+    overview_subtitle?: string | null;
+    overview_description: string;
+    overview_right_block_type?: 'image' | 'content' | 'none' | null;
+    overview_right_block_icon?: string | null;
+    overview_right_block_title?: string | null;
+    overview_right_block_description?: string | null;
+    features_title?: string | null;
+    features_description?: string | null;
+    features?: Array<{
+        title: string;
+        description: string;
+        badge?: string | null;
+        icon?: string | null;
+        col_span?: string | number | null;
+    }>;
+    faqs_title?: string | null;
+    faqs_description?: string | null;
+    faqs?: Array<{
+        question: string;
+        answer: string;
+        category?: string | null;
+    }>;
+    media?: MediaItem[];
+}

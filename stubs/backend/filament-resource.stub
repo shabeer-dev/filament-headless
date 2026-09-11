@@ -1,0 +1,93 @@
+<?php
+
+namespace App\Filament\Resources\Content\Page{{CLASS_NAME}};
+
+use App\Filament\Helpers\FormFields;
+use App\Filament\Resources\SingletonResource;
+use App\Models\Content\Page{{CLASS_NAME}};
+use Filament\Forms;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Repeater;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Schema;
+use Webard\FilamentTranslatable\Forms\Component\Translations;
+
+class Page{{CLASS_NAME}}Resource extends SingletonResource
+{
+    protected static ?string $model = Page{{CLASS_NAME}}::class;
+
+    protected static ?int $navigationSort = 10;
+
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Pages';
+
+    protected static ?string $modelLabel = '{{TITLE}} Page';
+
+    protected static ?string $pluralModelLabel = '{{TITLE}}';
+
+    protected static ?string $slug = 'pages/{{SLUG}}';
+
+    public static function form(Schema $schema): Schema
+    {
+        return $schema
+            ->schema([
+                Translations::make('translations')->columnSpanFull()
+                    ->schema([
+                        Tabs::make('Tabs')
+                            ->tabs([
+                                FormFields::heroSectionTab(),
+                                FormFields::overviewTab(),
+                                Tab::make('Features & Benefits')
+                                    ->schema([
+                                        TextInput::make('features_title')->label('Section Heading'),
+                                        Textarea::make('features_description')->label('Section Description')->rows(3),
+                                        Repeater::make('features')
+                                            ->label('Feature Cards')
+                                            ->collapsed()
+                                            ->cloneable()
+                                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? null)
+                                            ->schema([
+                                                TextInput::make('title')->label('Feature Title')->required(),
+                                                Textarea::make('description')->label('Description')->rows(2)->required(),
+                                                TextInput::make('badge')->label('Badge / Pill Text'),
+                                                FormFields::icon('icon')->label('Material Icon'),
+                                                FormFields::colSpanSelect('col_span')->label('Card Width'),
+                                            ])
+                                            ->columns(3)
+                                            ->columnSpanFull(),
+                                    ]),
+                                Tab::make('FAQ')
+                                    ->schema([
+                                        TextInput::make('faqs_title')->label('Section Heading'),
+                                        Textarea::make('faqs_description')->label('Section Description')->rows(3),
+                                        Repeater::make('faqs')
+                                            ->label('Questions & Answers')
+                                            ->collapsed()
+                                            ->cloneable()
+                                            ->itemLabel(fn (array $state): ?string => $state['question'] ?? null)
+                                            ->schema([
+                                                TextInput::make('question')->label('Question')->required(),
+                                                Textarea::make('answer')->label('Answer')->rows(3)->required(),
+                                                TextInput::make('category')->label('Category / Topic'),
+                                            ])
+                                            ->columns(2)
+                                            ->columnSpanFull(),
+                                    ]),
+                                FormFields::footerCtaTab(),
+                            ])
+                            ->columnSpanFull(),
+                    ]),
+                FormFields::seoSection(),
+            ]);
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ManagePage{{CLASS_NAME}}::route('/'),
+        ];
+    }
+}

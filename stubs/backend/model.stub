@@ -1,0 +1,57 @@
+<?php
+
+namespace App\Models\Content;
+
+use App\Models\Concerns\HasSEO;
+use App\Models\Concerns\InteractsWithOptimizedMedia;
+use App\Models\Concerns\SerializesLocalizedStrings;
+use App\Observers\ContentObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\Translatable\HasTranslations;
+
+#[ObservedBy(ContentObserver::class)]
+class Page{{CLASS_NAME}} extends Model implements HasMedia
+{
+    use HasSEO;
+    use HasTranslations, InteractsWithOptimizedMedia;
+    use SerializesLocalizedStrings;
+
+    protected $table = '{{TABLE_NAME}}';
+
+    protected $guarded = [];
+
+    public array $translatable = [
+        'hero_title',
+        'hero_label',
+        'hero_highlighted',
+        'hero_description',
+        'hero_cta_primary',
+        'overview_title',
+        'overview_subtitle',
+        'overview_description',
+        'overview_right_block_title',
+        'overview_right_block_description',
+        'features_title',
+        'features_description',
+        'features',
+        'faqs_title',
+        'faqs_description',
+        'faqs',
+        'footer_cta_title',
+        'footer_cta_button',
+    ];
+
+    protected $casts = [
+        'features' => 'array',
+        'faqs' => 'array',
+    ];
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('hero')->singleFile();
+        $this->addMediaCollection('overview')->singleFile();
+        $this->addMediaCollection('footer_cta_bg')->singleFile();
+    }
+}

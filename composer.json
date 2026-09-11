@@ -1,0 +1,44 @@
+{
+    "name": "shabeer-dev/filament-headless",
+    "description": "Headless CMS and Inertia React architecture toolkit and CLI generator for Laravel and Filament v5",
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://github.com/shabeer-dev/filament-headless",
+    "keywords": [
+        "laravel",
+        "filament",
+        "headless",
+        "inertia",
+        "react",
+        "cms",
+        "multilingual",
+        "boost"
+    ],
+    "authors": [
+        {
+            "name": "Shabeer",
+            "homepage": "https://github.com/shabeer-dev"
+        }
+    ],
+    "require": {
+        "php": "^8.4",
+        "illuminate/support": "^11.0|^12.0|^13.0",
+        "illuminate/console": "^11.0|^12.0|^13.0",
+        "illuminate/filesystem": "^11.0|^12.0|^13.0",
+        "laravel/prompts": "^0.1|^0.2|^0.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "HeadlessKit\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "HeadlessKit\\HeadlessKitServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

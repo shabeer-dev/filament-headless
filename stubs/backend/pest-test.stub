@@ -1,0 +1,23 @@
+<?php
+
+use Inertia\Testing\AssertableInertia as Assert;
+
+it('renders the {{SLUG}} page successfully for default locale', function () {
+    $response = $this->get('/en/{{SLUG}}');
+
+    $response->assertStatus(200);
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('{{CLASS_NAME}}')
+        ->has('content')
+    );
+});
+
+it('renders the {{SLUG}} page with localized parameters for alternative locales', function () {
+    $response = $this->get('/ar/{{SLUG}}');
+
+    $response->assertStatus(200);
+    $response->assertInertia(fn (Assert $page) => $page
+        ->component('{{CLASS_NAME}}')
+        ->where('locale', 'ar')
+    );
+});

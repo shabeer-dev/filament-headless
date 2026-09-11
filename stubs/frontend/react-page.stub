@@ -1,0 +1,46 @@
+import SeoMeta from '@/components/SeoMeta';
+import FooterCta from '@/components/ui/FooterCta';
+import HeroSection from '@/components/ui/HeroSection';
+import OverviewSection from '@/components/ui/OverviewSection';
+import AppLayout from '@/layouts/AppLayout';
+import FeaturesSection from '@/pages/{{CLASS_NAME}}/partials/FeaturesSection';
+import FaqSection from '@/pages/{{CLASS_NAME}}/partials/FaqSection';
+
+import type { Page{{CLASS_NAME}} } from '@/types/content';
+
+export default function {{CLASS_NAME}}({ content }: { content: Page{{CLASS_NAME}} }) {
+    return (
+        <>
+            <SeoMeta />
+
+            <HeroSection
+                content={content}
+                size="large"
+                media={content.media}
+                showWatermark={true}
+            />
+
+            <OverviewSection
+                content={content}
+                media={content.media}
+            />
+
+            {content.features && content.features.length > 0 && (
+                <FeaturesSection content={content} />
+            )}
+
+            {content.faqs && content.faqs.length > 0 && (
+                <FaqSection content={content} />
+            )}
+
+            <FooterCta
+                route={content.footer_cta_route}
+                title={content.footer_cta_title}
+                buttonText={content.footer_cta_button}
+                media={content.media}
+            />
+        </>
+    );
+}
+
+{{CLASS_NAME}}.layout = (page: React.ReactNode) => <AppLayout>{page}</AppLayout>;

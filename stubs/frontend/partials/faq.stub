@@ -1,0 +1,62 @@
+import { useState } from 'react';
+import Section from '@/components/ui/Section';
+import SectionHeader from '@/components/ui/SectionHeader';
+import Icon from '@/components/ui/Icon';
+import type { Page{{CLASS_NAME}} } from '@/types/content';
+
+export default function FaqSection({ content }: { content: Page{{CLASS_NAME}} }) {
+    const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+    if (!content.faqs || content.faqs.length === 0) {
+        return null;
+    }
+
+    const toggle = (idx: number) => {
+        setOpenIndex(openIndex === idx ? null : idx);
+    };
+
+    return (
+        <Section className="py-20 bg-background border-t border-outline/10">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                {content.faqs_title && (
+                    <SectionHeader
+                        title={content.faqs_title}
+                        description={content.faqs_description ?? undefined}
+                        className="mb-12 text-center"
+                    />
+                )}
+
+                <div className="space-y-4">
+                    {content.faqs.map((faq, idx) => {
+                        const isOpen = openIndex === idx;
+                        return (
+                            <div
+                                key={idx}
+                                className="rounded-xl bg-surface border border-outline/15 overflow-hidden transition-all duration-200"
+                            >
+                                <button
+                                    type="button"
+                                    onClick={() => toggle(idx)}
+                                    className="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none cursor-pointer"
+                                >
+                                    <span className="font-semibold text-text-white text-base md:text-lg pr-4">
+                                        {faq.question}
+                                    </span>
+                                    <span className={`text-primary transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
+                                        <Icon name="expand_more" />
+                                    </span>
+                                </button>
+
+                                {isOpen && (
+                                    <div className="px-6 pb-6 pt-2 text-on-surface-variant text-sm md:text-base leading-relaxed border-t border-outline/10">
+                                        {faq.answer}
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        </Section>
+    );
+}

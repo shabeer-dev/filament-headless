@@ -1,0 +1,11 @@
+<?php
+
+namespace App\Filament\Resources\Content\Page{{CLASS_NAME}}\Pages;
+
+use App\Filament\Pages\ManageSingletonPage;
+use App\Filament\Resources\Content\Page{{CLASS_NAME}}\Page{{CLASS_NAME}}Resource;
+
+class ManagePage{{CLASS_NAME}} extends ManageSingletonPage
+{
+    protected static string $resource = Page{{CLASS_NAME}}Resource::class;
+}

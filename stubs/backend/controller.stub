@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Http\Controllers\Page;
+
+use App\Http\Controllers\ContentPageController;
+use App\Models\Content\Page{{CLASS_NAME}};
+
+class {{CLASS_NAME}}Controller extends ContentPageController
+{
+    protected function model(): string
+    {
+        return Page{{CLASS_NAME}}::class;
+    }
+
+    protected function component(): string
+    {
+        return '{{CLASS_NAME}}';
+    }
+}
