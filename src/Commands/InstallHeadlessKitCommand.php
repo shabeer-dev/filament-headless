@@ -27,9 +27,18 @@ class InstallHeadlessKitCommand extends Command
         $force = (bool) $this->option('force');
         $isInteractive = ! $this->option('non-interactive') && ! $this->option('no-interaction');
 
-        // Prevent Windows terminal errors (such as "The system cannot find the path specified." or "/dev/tty")
+        // Prevent Windows terminal errors (such as "The system cannot find the path specified." from /dev/tty inspection)
         if (PHP_OS_FAMILY === 'Windows') {
             Prompt::fallbackWhen(true);
+
+            try {
+                $ref = new \ReflectionClass(\Laravel\Prompts\Terminal::class);
+                $ref->setStaticPropertyValue('foregroundColor', [204, 204, 204]);
+                $ref->setStaticPropertyValue('backgroundColor', [0, 0, 0]);
+                $ref->setStaticPropertyValue('trueColorSupport', false);
+            } catch (\Throwable $e) {
+                // Ignore if reflection fails
+            }
         }
 
         if ($isInteractive) {
