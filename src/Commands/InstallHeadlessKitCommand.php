@@ -4,6 +4,7 @@ namespace HeadlessKit\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Laravel\Prompts\Prompt;
 
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\info;
@@ -25,6 +26,11 @@ class InstallHeadlessKitCommand extends Command
     {
         $force = (bool) $this->option('force');
         $isInteractive = ! $this->option('non-interactive') && ! $this->option('no-interaction');
+
+        // Prevent cmd.exe "< /dev/tty" error in Git Bash (MinGW) on Windows
+        if (PHP_OS_FAMILY === 'Windows' && (getenv('MSYSTEM') || getenv('MINGW_PREFIX'))) {
+            Prompt::fallbackWhen(true);
+        }
 
         if ($isInteractive) {
             intro('🚀 Filament Headless CMS + Inertia React Starter Kit Installer');
