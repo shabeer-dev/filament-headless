@@ -3,15 +3,46 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/shabeer-dev/filament-headless.svg?style=flat-square)](https://packagist.org/packages/shabeer-dev/filament-headless)
 [![Total Downloads](https://img.shields.io/packagist/dt/shabeer-dev/filament-headless.svg?style=flat-square)](https://packagist.org/packages/shabeer-dev/filament-headless)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/shabeer-dev/filament-headless/lint.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/shabeer-dev/filament-headless/actions)
+[![PHP Version](https://img.shields.io/badge/PHP-8.4%2B-blue.svg?style=flat-square)](https://php.net)
 [![License](https://img.shields.io/packagist/l/shabeer-dev/filament-headless.svg?style=flat-square)](LICENSE)
 
 A modular, turnkey toolkit and CLI generator for building high-performance, multilingual websites using **Filament v5 as a Headless CMS** and **Inertia.js v3 + React 19** as the decoupled frontend, fully aligned with **Laravel Boost MCP & Guidelines**.
 
 ---
 
+## 🏛️ Architecture Overview
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                         Filament v5 Admin Panel                        │
+│   • Singleton Resources (No Table Views; direct-to-edit for ID 1)      │
+│   • Pure Modular Block Builder (Drag, drop, and reorder sections)     │
+│   • Spatie Translatable + Webard (In-place Tabbed Locale Switcher)     │
+│   • Real-Time Google SERP & OpenGraph Social Card Live Previews        │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │ Saves JSON & Media
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                 Laravel 13 Content Engine & Caching                    │
+│   • SerializesLocalizedStrings Trait (Flattens JSON into active locale)│
+│   • ContentObserver: Automatically purges cache across all locales     │
+│   • ContentPageController: Cache::rememberForever with locale keys     │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │ Hydrates Inertia Payload
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                   Inertia.js v3 + React 19 Frontend                    │
+│   • AppLayout: RTL / LTR dynamic direction based on active locale      │
+│   • BlockRenderer: Dynamic section dispatcher (<BlockRenderer />)     │
+│   • Laravel Wayfinder: Type-safe route functions (@/routes, @/actions) │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 ## ⚡ Key Highlights
 
-- **Singleton Page Pattern**: Eliminates confusing tables for website pages (Home, About, Services, etc.). Clicking a page navigates directly to its singular edit form.
+- **Singleton Page Pattern**: Eliminates confusing data tables for website pages (Home, About, Services, etc.). Clicking a page navigates directly to its singular edit form.
 - **Pure Modular Block Builder**: Construct dynamic pages where admins can add, reorder, and remove blocks freely using Filament's `Builder` component. Rendered on the frontend via a dynamic React `<BlockRenderer />`.
 - **Laravel Boost MCP & Skill Integration**:
   - Automatically synchronizes with `boost.json` (`filament/filament`, `spatie/laravel-medialibrary`, `spatie/laravel-translatable`).
@@ -26,6 +57,18 @@ A modular, turnkey toolkit and CLI generator for building high-performance, mult
 - **Architecture Linter**: `php artisan headless:lint` audits content models, Filament resources, and React pages to enforce architectural purity and catch drift.
 - **AI Agent Context Generator**: `php artisan headless:agent-context` compiles a real-time Markdown ground-truth digest (`.agents/headless-context.md`) for LLM agents.
 - **One-Command Scaffolding**: `php artisan headless:make-page {Name}` scaffolds all 7 layers of a page in seconds.
+
+---
+
+## 📋 Requirements
+
+| Requirement | Supported Versions |
+| :--- | :--- |
+| **PHP** | `^8.4` |
+| **Laravel Framework** | `^11.0` \| `^12.0` \| `^13.0` |
+| **Filament** | `^5.0` |
+| **Inertia Laravel / React** | `^2.0` \| `^3.0` with React 19 |
+| **Tailwind CSS** | `^4.0` |
 
 ---
 
@@ -102,6 +145,41 @@ export default function ServicesPage({ content }) {
 
 ---
 
+## 🌐 Multi-Language Configuration (`config/headless-kit.php`)
+
+All supported languages, their native names, flags, and text directions are configured in a single place:
+
+```php
+// config/headless-kit.php
+return [
+    'locales' => [
+        'en' => [
+            'name' => 'English',
+            'native' => 'English',
+            'dir' => 'ltr',
+            'flag' => 'US',
+        ],
+        'ar' => [
+            'name' => 'Arabic',
+            'native' => 'العربية',
+            'dir' => 'rtl',
+            'flag' => 'AE',
+        ],
+        'es' => [
+            'name' => 'Spanish',
+            'native' => 'Español',
+            'dir' => 'ltr',
+            'flag' => 'ES',
+        ],
+    ],
+
+    'default_locale' => env('APP_LOCALE', 'en'),
+    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
+];
+```
+
+---
+
 ## 🧪 Pest Feature Testing (Boost Standard)
 
 Every page generated with `php artisan headless:make-page` comes with a ready-to-run Pest 4 feature test:
@@ -125,6 +203,19 @@ Run tests with:
 ```bash
 php artisan test --compact
 ```
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Format with Pint (`vendor/bin/pint`)
+4. Commit your Changes (`git commit -m 'feat: Add some AmazingFeature'`)
+5. Push to the Branch (`git push origin feature/AmazingFeature`)
+6. Open a Pull Request
 
 ---
 
