@@ -61,7 +61,8 @@ class HeadlessDoctorCommand extends Command
         ];
 
         // 3. Storage Symlink
-        $storageLinked = is_link(public_path('storage')) || is_dir(public_path('storage'));
+        $storagePath = public_path('storage');
+        $storageLinked = file_exists($storagePath) || is_link($storagePath) || is_dir($storagePath);
         $checks[] = [
             'Category' => 'Filesystem',
             'Check' => 'Public Storage Symlink',
