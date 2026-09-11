@@ -44,11 +44,15 @@ class MakeHeadlessPageCommand extends Command
 
         // 1. Migration
         $migrationFiles = $files->glob(database_path("migrations/*_create_{$tableName}_table.php"));
-        if (empty($migrationFiles) || $force) {
+        if (empty($migrationFiles)) {
             $timestamp = date('Y_m_d_His');
             $migrationPath = database_path("migrations/{$timestamp}_create_{$tableName}_table.php");
-            $generator->write("{$stubDir}/backend/migration.stub", $migrationPath, $replacements, $force);
+            $generator->write("{$stubDir}/backend/migration.stub", $migrationPath, $replacements, false);
             $this->line('  <info>✔</info> Migration: database/migrations/'.basename($migrationPath));
+        } elseif ($force) {
+            $migrationPath = $migrationFiles[0];
+            $generator->write("{$stubDir}/backend/migration.stub", $migrationPath, $replacements, true);
+            $this->line('  <info>✔</info> Overwrote Migration: database/migrations/'.basename($migrationPath));
         } else {
             $this->line('  <comment>↷</comment> Migration already exists: '.basename($migrationFiles[0]));
         }
