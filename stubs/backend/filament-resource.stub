@@ -12,7 +12,7 @@ use Filament\Forms\Components\Repeater;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
-use Webard\FilamentTranslatable\Forms\Component\Translations;
+use Happenv\FilamentTranslatable\Forms\Component\Translations;
 
 class Page{{CLASS_NAME}}Resource extends SingletonResource
 {

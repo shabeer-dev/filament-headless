@@ -12,7 +12,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Components\Utilities\Get;
 use Illuminate\Support\HtmlString;
-use Webard\FilamentTranslatable\Forms\Component\Translations;
+use Happenv\FilamentTranslatable\Forms\Component\Translations;
 
 class FormFields
 {

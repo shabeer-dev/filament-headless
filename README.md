@@ -17,7 +17,7 @@ A modular, turnkey toolkit and CLI generator for building high-performance, mult
 │                         Filament v5 Admin Panel                        │
 │   • Singleton Resources (No Table Views; direct-to-edit for ID 1)      │
 │   • Pure Modular Block Builder (Drag, drop, and reorder sections)     │
-│   • Spatie Translatable + Webard (In-place Tabbed Locale Switcher)     │
+│   • Spatie Translatable + Happenv (In-place Tabbed Locale Switcher)    │
 │   • Real-Time Google SERP & OpenGraph Social Card Live Previews        │
 └───────────────────────────────────┬────────────────────────────────────┘
                                     │ Saves JSON & Media
