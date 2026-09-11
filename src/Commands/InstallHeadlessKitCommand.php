@@ -119,6 +119,21 @@ class InstallHeadlessKitCommand extends Command
             '--force' => $force,
         ]);
 
+        // Auto-publish Spatie Media Library migration if not present
+        if (empty($files->glob(database_path('migrations/*_create_media_table.php')))) {
+            $this->callSilent('vendor:publish', [
+                '--provider' => 'Spatie\MediaLibrary\MediaLibraryServiceProvider',
+                '--tag' => 'medialibrary-migrations',
+            ]);
+            $this->line('  <info>✔</info> Published Spatie Media Library migration');
+        }
+
+        // Auto-link storage if not linked
+        if (! is_link(public_path('storage')) && ! is_dir(public_path('storage'))) {
+            $this->callSilent('storage:link');
+            $this->line('  <info>✔</info> Created public storage symlink');
+        }
+
         // Update config/headless-kit.php with chosen languages if interactive
         if (isset($selectedLanguages) && isset($defaultLanguage)) {
             $this->updatePackageConfig($files, $selectedLanguages, $defaultLanguage);
